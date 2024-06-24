@@ -136,8 +136,6 @@ function App() {
         </ModalContent>
       </Modal>
 
-      {/* Color Overview Component */}
-      <ColorOverview themeColors={theme.colors.brand} />
     </ChakraProvider>
   );
 }
