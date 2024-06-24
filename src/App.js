@@ -1,4 +1,3 @@
-// src/App.js
 import React from 'react';
 import {
   ChakraProvider,
@@ -37,8 +36,8 @@ function App() {
   const [todoToDelete, setTodoToDelete] = React.useState(null);
 
   const addTodo = (text) => {
-    const newTodo = { id: Date.now(), text };
-    setTodos([...todos, newTodo]);
+    const newTodoItem = { id: Date.now(), text }; // Use a more specific name for clarity
+    setTodos([...todos, newTodoItem]);
     setNewTodo('');
   };
 
@@ -46,6 +45,10 @@ function App() {
     const completedTodo = todos.find(todo => todo.id === id);
     setTodos(todos.filter(todo => todo.id !== id));
     setCompletedTodos([...completedTodos, completedTodo]);
+  };
+
+  const updateTodo = (id, newText) => {
+    setTodos(todos.map(todo => (todo.id === id ? { ...todo, text: newText } : todo)));
   };
 
   const deleteTodo = (id) => {
@@ -108,7 +111,7 @@ function App() {
         <VStack spacing={4} width="100%" align="stretch">
           {todos.map((todo) => (
             <Box key={todo.id} p={2} bg="brand.700" color="brand.50" borderColor="brand.500" borderRadius="md">
-              <TodoItem todo={todo} onCheck={completeTodo} />
+              <TodoItem todo={todo} onCheck={completeTodo} onUpdate={updateTodo} onDelete={deleteTodo} />
             </Box>
           ))}
         </VStack>
@@ -118,6 +121,22 @@ function App() {
         )}
       </Box>
 
+      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+        <ModalOverlay />
+        <ModalContent bg="brand.800" color="brand.50">
+          <ModalHeader>Confirm Delete</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            Are you sure you want to delete this todo?
+          </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="red" mr={3} onClick={confirmDelete}>
+              Delete
+            </Button>
+            <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
 
     </ChakraProvider>
   );
