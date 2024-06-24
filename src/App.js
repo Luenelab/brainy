@@ -99,9 +99,8 @@ function App() {
       <Box p={10} maxW="md" mx="auto" mt={8} bg="brand.800" color="brand.50">
         <Heading mb={16} as="h1" size="2xl" textAlign="left" className="bigmarker-cg-keynote-title">
           <span style={{ textDecoration: 'underline solid rgba(255, 245, 218, 1)', textDecorationThickness: '2px', textUnderlineOffset: '2px', transition: 'background-size 400ms cubic-bezier(0.8, 0, 0.2, 1), text-decoration-color 400ms cubic-bezier(0.8, 0, 0.2, 1)' }}>
-            Todapp App
+            #brain
           </span>
-         
         </Heading>
 
         <TodoInput addTodo={addTodo} newTodo={newTodo} setNewTodo={setNewTodo} />
@@ -109,7 +108,7 @@ function App() {
         <VStack spacing={4} width="100%" align="stretch">
           {todos.map((todo) => (
             <Box key={todo.id} p={2} bg="brand.700" color="brand.50" borderColor="brand.500" borderRadius="md">
-              <TodoItem todo={todo} onCheck={completeTodo} onDelete={deleteTodo} />
+              <TodoItem todo={todo} onCheck={completeTodo} />
             </Box>
           ))}
         </VStack>
@@ -119,22 +118,6 @@ function App() {
         )}
       </Box>
 
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <ModalOverlay />
-        <ModalContent bg="brand.800" color="brand.50">
-          <ModalHeader>Confirm Delete</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            Are you sure you want to delete this todo?
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="red" mr={3} onClick={confirmDelete}>
-              Delete
-            </Button>
-            <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
 
     </ChakraProvider>
   );

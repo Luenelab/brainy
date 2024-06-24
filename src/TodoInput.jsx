@@ -26,7 +26,7 @@ function TodoInput({ addTodo, newTodo, setNewTodo }) {
         size="lg"
       />
       <Button onClick={handleAddTodo} colorScheme="brand" size="lg">
-        Add Todo
+      🧠 → 📱
       </Button>
     </VStack>
   );
