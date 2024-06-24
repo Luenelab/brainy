@@ -21,6 +21,15 @@ const customTheme = extendTheme({
     heading: 'Inter, sans-serif',
     body: 'Inter, sans-serif',
   },
+
+  styles: {
+    global: {
+      body: {
+        bg: 'brand.900', // Set background color to brand.900
+        color: 'brand.50', // Text color
+      },
+    },
+  },
   components: {
     Badge: {
       baseStyle: {

@@ -5,7 +5,7 @@ const ColorOverview = ({ themeColors }) => {
   const colorEntries = Object.entries(themeColors);
 
   return (
-    <Box maxW="500px" mx="auto" mt={8} p={4}>
+    <Box maxW="600px" mx="auto" mt={8} p={4}>
       <Box bg="brand.800" color="brand.50" borderRadius="md" p={4} boxShadow="md" mb={6}>
         <Heading as="h2" size="md" mb={4}>Theme Colors</Heading>
         <VStack align="stretch">

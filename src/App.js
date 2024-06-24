@@ -35,7 +35,6 @@ function App() {
   const [newTodo, setNewTodo] = React.useState('');
   const [isOpen, setIsOpen] = React.useState(false);
   const [todoToDelete, setTodoToDelete] = React.useState(null);
-  const { colorMode, toggleColorMode } = useColorMode();
 
   const addTodo = (text) => {
     const newTodo = { id: Date.now(), text };
@@ -102,12 +101,7 @@ function App() {
           <span style={{ textDecoration: 'underline solid rgba(255, 245, 218, 1)', textDecorationThickness: '2px', textUnderlineOffset: '2px', transition: 'background-size 400ms cubic-bezier(0.8, 0, 0.2, 1), text-decoration-color 400ms cubic-bezier(0.8, 0, 0.2, 1)' }}>
             Todapp App
           </span>
-          <IconButton
-            aria-label="Toggle color mode"
-            icon={colorMode === 'dark' ? <SunIcon /> : <MoonIcon />}
-            onClick={toggleColorMode}
-            ml={2}
-          />
+         
         </Heading>
 
         <TodoInput addTodo={addTodo} newTodo={newTodo} setNewTodo={setNewTodo} />
