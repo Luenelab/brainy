@@ -1,7 +1,8 @@
 {
-  "name": "chakra-todo",
+  "name": "todapp",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://luenelab.github.io/todapp", // Specify your GitHub Pages URL here
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
@@ -19,8 +20,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "predeploy": "npm run build", // Add a predeploy script to build before deploying
+    "deploy": "gh-pages -d build" // Use gh-pages to deploy the 'build' folder
   },
   "eslintConfig": {
     "extends": [
@@ -39,5 +40,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
   }
 }
