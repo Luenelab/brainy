@@ -2,7 +2,7 @@
   "name": "todapp",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://luenelab.github.io/todapp", // Specify your GitHub Pages URL here
+  "homepage": "https://luenelab.github.io/todapp",
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
@@ -20,8 +20,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "predeploy": "npm run build", // Add a predeploy script to build before deploying
-    "deploy": "gh-pages -d build" // Use gh-pages to deploy the 'build' folder
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
