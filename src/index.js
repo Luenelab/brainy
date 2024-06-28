@@ -1,14 +1,13 @@
+// src/index.js
 import React from 'react';
-import ReactDOM from 'react-dom'; // Correct import for ReactDOM
-import './index.css';
+import ReactDOM from 'react-dom';
+import { ChakraProvider } from '@chakra-ui/react';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
+import customTheme from './theme';
 
-const root = ReactDOM.createRoot(document.getElementById('root')); // Use ReactDOM.createRoot() for React 18+
-root.render(
-  <React.StrictMode>
+ReactDOM.render(
+  <ChakraProvider theme={customTheme}>
     <App />
-  </React.StrictMode>
+  </ChakraProvider>,
+  document.getElementById('root')
 );
-
-reportWebVitals();

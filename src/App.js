@@ -1,4 +1,5 @@
-import React from 'react';
+// src/App.js
+import React, { useState } from 'react';
 import {
   ChakraProvider,
   Box,
@@ -19,24 +20,23 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-  useColorMode,
 } from '@chakra-ui/react';
 import { FiMoreVertical } from 'react-icons/fi';
-import theme from './theme'; // Import custom Chakra UI theme
+import customTheme from './theme';
 import TodoInput from './TodoInput';
 import TodoItem from './TodoItem';
-import ColorOverview from './ColorOverview'; // Import ColorOverview component
-import { SunIcon, MoonIcon } from '@chakra-ui/icons';
+import StartScreen from './StartScreen';
 
 function App() {
-  const [todos, setTodos] = React.useState([]);
-  const [completedTodos, setCompletedTodos] = React.useState([]);
-  const [newTodo, setNewTodo] = React.useState('');
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [todoToDelete, setTodoToDelete] = React.useState(null);
+  const [todos, setTodos] = useState([]);
+  const [completedTodos, setCompletedTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [todoToDelete, setTodoToDelete] = useState(null);
+  const [user, setUser] = useState(null);
 
   const addTodo = (text) => {
-    const newTodoItem = { id: Date.now(), text }; // Use a more specific name for clarity
+    const newTodoItem = { id: Date.now(), text };
     setTodos([...todos, newTodoItem]);
     setNewTodo('');
   };
@@ -71,6 +71,20 @@ function App() {
     setCompletedTodos([]);
   };
 
+  const handleLogin = (username, passcode) => {
+    setUser({ username, passcode });
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    setTodos([]);
+    setCompletedTodos([]);
+  };
+
+  if (!user) {
+    return <StartScreen onLogin={handleLogin} />;
+  }
+
   const CompletedTodos = ({ completedTodos, onDeleteCompleted }) => {
     return (
       <Box mt={4}>
@@ -97,13 +111,20 @@ function App() {
   };
 
   return (
-    <ChakraProvider theme={theme}>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+    <ChakraProvider theme={customTheme}>
+      <ColorModeScript initialColorMode={customTheme.config.initialColorMode} />
       <Box p={4} maxW={{ base: '100%', md: 'md' }} mx="auto" mt={8} color="brand.50">
         <Heading mb={8} as="h1" size="2xl" textAlign="left" className="bigmarker-cg-keynote-title">
           <span style={{ textDecoration: 'underline solid rgba(255, 245, 218, 1)', textDecorationThickness: '2px', textUnderlineOffset: '2px', transition: 'background-size 400ms cubic-bezier(0.8, 0, 0.2, 1), text-decoration-color 400ms cubic-bezier(0.8, 0, 0.2, 1)' }}>
-            #brain
+            Brainy
           </span>
+          <Menu>
+            <MenuButton as={IconButton} icon={<FiMoreVertical />} variant="outline" aria-label="Options" color="brand.50" position="absolute" top="4" right="4" />
+            <MenuList>
+              <MenuItem onClick={handleLogout}>Change User</MenuItem>
+              <MenuItem>See Source</MenuItem>
+            </MenuList>
+          </Menu>
         </Heading>
 
         <TodoInput addTodo={addTodo} newTodo={newTodo} setNewTodo={setNewTodo} />
