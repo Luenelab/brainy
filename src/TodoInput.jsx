@@ -28,7 +28,7 @@ function TodoInput({ addTodo, newTodo, setNewTodo }) {
     <form onSubmit={handleSubmit}>
       <VStack spacing={4} width="100%" align="stretch" mb={8}>
         <Input
-          placeholder="Enter thought"
+          placeholder="Dump thought"
           value={newTodo}
           onChange={(e) => setNewTodo(e.target.value)}
           onKeyDown={handleKeyDown} // Handle Enter key press
