@@ -73,7 +73,7 @@ function App() {
 
   const CompletedTodos = ({ completedTodos, onDeleteCompleted }) => {
     return (
-      <Box mt={8}>
+      <Box mt={4}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
           <Heading as="h2" size="lg" color="brand.50">
             Completed Todos
@@ -99,8 +99,8 @@ function App() {
   return (
     <ChakraProvider theme={theme}>
       <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-      <Box p={10} maxW="md" mx="auto" mt={8} bg="brand.800" color="brand.50">
-        <Heading mb={16} as="h1" size="2xl" textAlign="left" className="bigmarker-cg-keynote-title">
+      <Box p={4} maxW={{ base: '100%', md: 'md' }} mx="auto" mt={8} color="brand.50">
+        <Heading mb={8} as="h1" size="2xl" textAlign="left" className="bigmarker-cg-keynote-title">
           <span style={{ textDecoration: 'underline solid rgba(255, 245, 218, 1)', textDecorationThickness: '2px', textUnderlineOffset: '2px', transition: 'background-size 400ms cubic-bezier(0.8, 0, 0.2, 1), text-decoration-color 400ms cubic-bezier(0.8, 0, 0.2, 1)' }}>
             #brain
           </span>
