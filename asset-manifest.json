@@ -1,15 +1,10 @@
 {
   "files": {
-    "main.css": "/brainy/static/css/main.e6c13ad2.css",
-    "main.js": "/brainy/static/js/main.c9618e4b.js",
-    "static/js/453.8d77da50.chunk.js": "/brainy/static/js/453.8d77da50.chunk.js",
+    "main.js": "/brainy/static/js/main.b10e1ebf.js",
     "index.html": "/brainy/index.html",
-    "main.e6c13ad2.css.map": "/brainy/static/css/main.e6c13ad2.css.map",
-    "main.c9618e4b.js.map": "/brainy/static/js/main.c9618e4b.js.map",
-    "453.8d77da50.chunk.js.map": "/brainy/static/js/453.8d77da50.chunk.js.map"
+    "main.b10e1ebf.js.map": "/brainy/static/js/main.b10e1ebf.js.map"
   },
   "entrypoints": [
-    "static/css/main.e6c13ad2.css",
-    "static/js/main.c9618e4b.js"
+    "static/js/main.b10e1ebf.js"
   ]
 }
