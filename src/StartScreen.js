@@ -1,4 +1,3 @@
-// src/StartScreen.js
 import React, { useState } from 'react';
 import {
   Box,
@@ -9,16 +8,52 @@ import {
   FormControl,
   FormLabel,
 } from '@chakra-ui/react';
+import { useAuth } from './AuthContext';
 
-const StartScreen = ({ onLogin }) => {
+const token = process.env.REACT_APP_GITHUB_TOKEN;
+
+const StartScreen = () => {
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [passcode, setPasscode] = useState('');
 
   const handleLogin = () => {
-    if (username && passcode) {
-      onLogin(username, passcode);
-    } else {
-      alert('Please enter both username and passcode.');
+    // Perform GitHub API call to fetch user file and validate credentials
+    fetchUserFile(username, passcode);
+  };
+
+  const fetchUserFile = async (username, passcode) => {
+    const user = 'luenelab';
+    const repo = 'brainy';
+    const filePath = `brain_sourcefiles/${username}.md`;
+    const endpoint = `https://api.github.com/repos/${user}/${repo}/contents/${filePath}`;
+
+    try {
+      const response = await fetch(endpoint, {
+        headers: {
+          Authorization: `token ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user file from GitHub');
+      }
+
+      const data = await response.json();
+      const content = atob(data.content); // Decode base64 content
+
+      // Process fetched content (e.g., validate passcode)
+      console.log('Fetched file content:', content);
+
+      // Validate passcode and proceed if correct
+      if (passcode === '1234') { // Replace with actual passcode validation
+        login(username, passcode);
+      } else {
+        alert('Invalid passcode');
+      }
+    } catch (error) {
+      console.error('Error fetching user file:', error);
+      // Handle error (e.g., display error message to user)
     }
   };
 
