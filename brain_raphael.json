@@ -1,0 +1,12 @@
+[
+    {
+      "id": 1,
+      "content": "Sample Todo 1",
+      "completed": false
+    },
+    {
+      "id": 2,
+      "text": "Sample Todo 2",
+      "completed": true
+    }
+  ]
