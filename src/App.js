@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   ChakraProvider,
@@ -19,14 +19,12 @@ import {
   MenuList,
   MenuItem,
   IconButton,
-  Input, // Import Input from Chakra UI
+  Input,
 } from '@chakra-ui/react';
 import { FiMoreVertical } from 'react-icons/fi';
 import theme from './theme'; // Import custom Chakra UI theme
 import TodoInput from './TodoInput';
 import TodoItem from './TodoItem';
-import ColorOverview from './ColorOverview'; // Import ColorOverview component
-import { SunIcon, MoonIcon } from '@chakra-ui/icons';
 
 const GITHUB_API_URL = 'https://api.github.com';
 const REPO_OWNER = 'Luenelab';
@@ -35,7 +33,6 @@ const FILE_PATH = 'brain_sourcefiles';
 const BRAIN_FILE = 'brain_raphael';
 const AUTH_PASSCODE = '1234'; // Hardcoded authentication passcode
 
-// Component definition for Brainy app.
 function App() {
   const [todos, setTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
@@ -43,8 +40,9 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState(null);
   const [passcode, setPasscode] = useState('');
-  const [authenticated, setAuthenticated] = useState(false); // State to track authentication status
+  const [authenticated, setAuthenticated] = useState(false);
   const [modalError, setModalError] = useState('');
+  const [syncMessage, setSyncMessage] = useState('');
 
   // Function to handle change in passcode input
   const handleChangePasscode = (event) => {
@@ -55,25 +53,62 @@ function App() {
   const handleLogin = () => {
     if (passcode === AUTH_PASSCODE) {
       setAuthenticated(true);
+      setSyncMessage('Authenticated successfully. Loading data...');
     } else {
       setModalError('Incorrect passcode. Please try again.');
     }
   };
 
+  // Function to fetch todos from GitHub
+  const fetchTodosFromGitHub = async () => {
+    try {
+      const url = `${GITHUB_API_URL}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}/${BRAIN_FILE}`;
+      const headers = {
+        Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
+      };
+
+      const response = await axios.get(url, { headers });
+      const content = response.data.content;
+      const decodedContent = JSON.parse(atob(content));
+
+      const incompleteTodos = decodedContent.filter(todo => !todo.completed);
+      const completedTodos = decodedContent.filter(todo => todo.completed);
+
+      setTodos(incompleteTodos);
+      setCompletedTodos(completedTodos);
+      setSyncMessage('Todos loaded successfully.');
+    } catch (error) {
+      console.error('Error fetching todos:', error);
+      setSyncMessage('Failed to fetch todos from GitHub.');
+    }
+  };
+
+  // useEffect hook to fetch todos on component mount
+  useEffect(() => {
+    if (authenticated) {
+      fetchTodosFromGitHub();
+    }
+  }, [authenticated]);
+
   // Function to add a new todo item
   const addTodo = (text) => {
-    const newTodoItem = { id: Date.now(), text };
-    setTodos([...todos, newTodoItem]);
-    syncToGitHub([...todos, newTodoItem]);
+    const newTodoItem = { id: Date.now(), text, completed: false };
+    const updatedTodos = [...todos, newTodoItem];
+    setTodos(updatedTodos);
+    syncToGitHub(updatedTodos);
     setNewTodo('');
+    console.log('Todo added:', newTodoItem);
   };
 
   // Function to mark a todo item as completed
   const completeTodo = (id) => {
-    const completedTodo = todos.find((todo) => todo.id === id);
-    setTodos(todos.filter((todo) => todo.id !== id));
-    setCompletedTodos([...completedTodos, completedTodo]);
-    syncToGitHub([...todos.filter((todo) => todo.id !== id), completedTodo]);
+    const todoToComplete = todos.find((todo) => todo.id === id);
+    todoToComplete.completed = true;
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
+    setTodos(updatedTodos);
+    setCompletedTodos([...completedTodos, todoToComplete]);
+    syncToGitHub([...updatedTodos, todoToComplete]);
+    console.log('Todo completed:', todoToComplete);
   };
 
   // Function to delete a todo item
@@ -87,12 +122,24 @@ function App() {
     const todoToDeleteObj = todos.find((todo) => todo.id === todoToDelete);
     setIsOpen(false);
     if (todoToDeleteObj) {
-      setTodos(todos.filter((todo) => todo.id !== todoToDelete));
+      const updatedTodos = todos.filter((todo) => todo.id !== todoToDelete);
+      setTodos(updatedTodos);
+      syncToGitHub(updatedTodos);
+      console.log('Todo deleted:', todoToDeleteObj);
     } else {
       const completedTodoToDeleteObj = completedTodos.find((todo) => todo.id === todoToDelete);
-      setCompletedTodos(completedTodos.filter((todo) => todo.id !== todoToDelete));
+      const updatedCompletedTodos = completedTodos.filter((todo) => todo.id !== todoToDelete);
+      setCompletedTodos(updatedCompletedTodos);
+      syncToGitHub(todos); // Sync todos after deletion
+      console.log('Completed todo deleted:', completedTodoToDeleteObj);
     }
-    syncToGitHub(todos.filter((todo) => todo.id !== todoToDelete));
+  };
+
+  // Function to delete all completed todos
+  const deleteCompletedTodos = () => {
+    setCompletedTodos([]);
+    syncToGitHub(todos); // Sync todos after deletion
+    console.log('All completed todos deleted.');
   };
 
   // Function to sync todo data with GitHub repository
@@ -114,9 +161,11 @@ function App() {
         sha,
       }, { headers });
 
+      setSyncMessage('Sync successful.');
       console.log('File updated successfully.');
     } catch (error) {
       console.error('Error updating file:', error);
+      setSyncMessage('Failed to sync with GitHub.');
     }
   };
 
@@ -146,22 +195,14 @@ function App() {
     );
   };
 
-  // Function to delete all completed todos
-  const deleteCompletedTodos = () => {
-    setCompletedTodos([]);
-    syncToGitHub(todos); // Sync todos after deletion
-  };
-
   // Render UI components based on authentication status
   return (
     <ChakraProvider theme={theme}>
       <Box p={10} maxW="md" mx="auto" mt={8} bg="brand.800" color="brand.50">
-        <Heading mb={16} as="h1" size="2xl" textAlign="left" className="bigmarker-cg-keynote-title">
-          <span style={{ textDecoration: 'underline solid rgba(255, 245, 218, 1)', textDecorationThickness: '2px', textUnderlineOffset: '2px', transition: 'background-size 400ms cubic-bezier(0.8, 0, 0.2, 1), text-decoration-color 400ms cubic-bezier(0.8, 0, 0.2, 1)' }}>
-            #brain
-          </span>
+        <Heading mb={4} as="h1" size="2xl" textAlign="left">
+          #brain
         </Heading>
-
+        {syncMessage && <Text mt={2} color="gray.400" fontSize="sm">{syncMessage}</Text>}
         {!authenticated && (
           <VStack spacing={4} width="100%" align="stretch" mb={8}>
             <Input
@@ -182,7 +223,6 @@ function App() {
             )}
           </VStack>
         )}
-
         {authenticated && (
           <>
             <TodoInput addTodo={addTodo} newTodo={newTodo} setNewTodo={setNewTodo} />
@@ -217,7 +257,6 @@ function App() {
             </Modal>
           </>
         )}
-
       </Box>
     </ChakraProvider>
   );
