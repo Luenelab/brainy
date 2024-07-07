@@ -1,4 +1,9 @@
-import React from 'react';
+// File: src/App.js
+// Main application component for Brainy app.
+// Handles todo management, integrates with GitHub API for syncing data securely.
+
+import React, { useState } from 'react';
+import axios from 'axios';
 import {
   ChakraProvider,
   Box,
@@ -13,13 +18,11 @@ import {
   ModalFooter,
   ModalBody,
   ModalCloseButton,
-  ColorModeScript,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
   IconButton,
-  useColorMode,
 } from '@chakra-ui/react';
 import { FiMoreVertical } from 'react-icons/fi';
 import theme from './theme'; // Import custom Chakra UI theme
@@ -28,50 +31,89 @@ import TodoItem from './TodoItem';
 import ColorOverview from './ColorOverview'; // Import ColorOverview component
 import { SunIcon, MoonIcon } from '@chakra-ui/icons';
 
-function App() {
-  const [todos, setTodos] = React.useState([]);
-  const [completedTodos, setCompletedTodos] = React.useState([]);
-  const [newTodo, setNewTodo] = React.useState('');
-  const [isOpen, setIsOpen] = React.useState(false);
-  const [todoToDelete, setTodoToDelete] = React.useState(null);
+const GITHUB_API_URL = 'https://api.github.com';
+const REPO_OWNER = 'Luenelab';
+const REPO_NAME = 'brainy_data';
+const FILE_PATH = 'brain_sourcefiles';
+const BRAIN_FILE = 'brain_raphael';
 
+// Component definition for Brainy app.
+function App() {
+  const [todos, setTodos] = useState([]);
+  const [completedTodos, setCompletedTodos] = useState([]);
+  const [newTodo, setNewTodo] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+  const [todoToDelete, setTodoToDelete] = useState(null);
+  const [passcode, setPasscode] = useState('');
+  const [modalError, setModalError] = useState('');
+
+  // Function to handle change in passcode input
+  const handleChangePasscode = (event) => {
+    setPasscode(event.target.value);
+  };
+
+  // Function to add a new todo item
   const addTodo = (text) => {
-    const newTodoItem = { id: Date.now(), text }; // Use a more specific name for clarity
+    const newTodoItem = { id: Date.now(), text };
     setTodos([...todos, newTodoItem]);
+    syncToGitHub([...todos, newTodoItem]);
     setNewTodo('');
   };
 
+  // Function to mark a todo item as completed
   const completeTodo = (id) => {
-    const completedTodo = todos.find(todo => todo.id === id);
-    setTodos(todos.filter(todo => todo.id !== id));
+    const completedTodo = todos.find((todo) => todo.id === id);
+    setTodos(todos.filter((todo) => todo.id !== id));
     setCompletedTodos([...completedTodos, completedTodo]);
+    syncToGitHub([...todos.filter((todo) => todo.id !== id), completedTodo]);
   };
 
-  const updateTodo = (id, newText) => {
-    setTodos(todos.map(todo => (todo.id === id ? { ...todo, text: newText } : todo)));
-  };
-
+  // Function to delete a todo item
   const deleteTodo = (id) => {
     setIsOpen(true);
     setTodoToDelete(id);
   };
 
+  // Function to confirm deletion of a todo item
   const confirmDelete = () => {
-    const todoToDeleteObj = todos.find(todo => todo.id === todoToDelete);
+    const todoToDeleteObj = todos.find((todo) => todo.id === todoToDelete);
     setIsOpen(false);
     if (todoToDeleteObj) {
-      setTodos(todos.filter(todo => todo.id !== todoToDelete));
+      setTodos(todos.filter((todo) => todo.id !== todoToDelete));
     } else {
-      const completedTodoToDeleteObj = completedTodos.find(todo => todo.id === todoToDelete);
-      setCompletedTodos(completedTodos.filter(todo => todo.id !== todoToDelete));
+      const completedTodoToDeleteObj = completedTodos.find((todo) => todo.id === todoToDelete);
+      setCompletedTodos(completedTodos.filter((todo) => todo.id !== todoToDelete));
+    }
+    syncToGitHub(todos.filter((todo) => todo.id !== todoToDelete));
+  };
+
+  // Function to sync todo data with GitHub repository
+  const syncToGitHub = async (items) => {
+    try {
+      const content = JSON.stringify(items, null, 2);
+      const url = `${GITHUB_API_URL}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}/${BRAIN_FILE}`;
+      const headers = {
+        Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
+      };
+
+      // Fetch current file details
+      const { data: { sha } } = await axios.get(url, { headers });
+
+      // Update file content
+      await axios.put(url, {
+        message: 'Update from Brainy app',
+        content: Buffer.from(content).toString('base64'),
+        sha,
+      }, { headers });
+
+      console.log('File updated successfully.');
+    } catch (error) {
+      console.error('Error updating file:', error);
     }
   };
 
-  const deleteCompletedTodos = () => {
-    setCompletedTodos([]);
-  };
-
-  const CompletedTodos = ({ completedTodos, onDeleteCompleted }) => {
+  // Component to display completed todos
+  const CompletedTodos = ({ completedTodos }) => {
     return (
       <Box mt={8}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
@@ -81,7 +123,7 @@ function App() {
           <Menu>
             <MenuButton as={IconButton} icon={<FiMoreVertical />} variant="outline" aria-label="Options" color="brand.50" />
             <MenuList>
-              <MenuItem onClick={onDeleteCompleted}>Delete All Completed Todos</MenuItem>
+              <MenuItem onClick={deleteCompletedTodos}>Delete All Completed Todos</MenuItem>
             </MenuList>
           </Menu>
         </Box>
@@ -96,9 +138,15 @@ function App() {
     );
   };
 
+  // Function to delete all completed todos
+  const deleteCompletedTodos = () => {
+    setCompletedTodos([]);
+    syncToGitHub(todos); // Sync todos after deletion
+  };
+
+  // Render UI components
   return (
     <ChakraProvider theme={theme}>
-      <ColorModeScript initialColorMode={theme.config.initialColorMode} />
       <Box p={10} maxW="md" mx="auto" mt={8} bg="brand.800" color="brand.50">
         <Heading mb={16} as="h1" size="2xl" textAlign="left" className="bigmarker-cg-keynote-title">
           <span style={{ textDecoration: 'underline solid rgba(255, 245, 218, 1)', textDecorationThickness: '2px', textUnderlineOffset: '2px', transition: 'background-size 400ms cubic-bezier(0.8, 0, 0.2, 1), text-decoration-color 400ms cubic-bezier(0.8, 0, 0.2, 1)' }}>
@@ -106,18 +154,20 @@ function App() {
           </span>
         </Heading>
 
+        <input type="password" value={passcode} onChange={handleChangePasscode} placeholder="Enter passcode" />
+
         <TodoInput addTodo={addTodo} newTodo={newTodo} setNewTodo={setNewTodo} />
 
         <VStack spacing={4} width="100%" align="stretch">
           {todos.map((todo) => (
             <Box key={todo.id} p={2} bg="brand.700" color="brand.50" borderColor="brand.500" borderRadius="md">
-              <TodoItem todo={todo} onCheck={completeTodo} onUpdate={updateTodo} onDelete={deleteTodo} />
+              <TodoItem todo={todo} onCheck={completeTodo} onDelete={deleteTodo} />
             </Box>
           ))}
         </VStack>
 
         {completedTodos.length > 0 && (
-          <CompletedTodos completedTodos={completedTodos} onDeleteCompleted={deleteCompletedTodos} />
+          <CompletedTodos completedTodos={completedTodos} />
         )}
       </Box>
 
