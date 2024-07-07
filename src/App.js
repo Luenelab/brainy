@@ -1,7 +1,3 @@
-// File: src/App.js
-// Main application component for Brainy app.
-// Handles todo management, integrates with GitHub API for syncing data securely.
-
 import React, { useState } from 'react';
 import axios from 'axios';
 import {
@@ -23,6 +19,7 @@ import {
   MenuList,
   MenuItem,
   IconButton,
+  Input, // Import Input from Chakra UI
 } from '@chakra-ui/react';
 import { FiMoreVertical } from 'react-icons/fi';
 import theme from './theme'; // Import custom Chakra UI theme
@@ -36,6 +33,7 @@ const REPO_OWNER = 'Luenelab';
 const REPO_NAME = 'brainy_data';
 const FILE_PATH = 'brain_sourcefiles';
 const BRAIN_FILE = 'brain_raphael';
+const AUTH_PASSCODE = '1234'; // Hardcoded authentication passcode
 
 // Component definition for Brainy app.
 function App() {
@@ -45,11 +43,21 @@ function App() {
   const [isOpen, setIsOpen] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState(null);
   const [passcode, setPasscode] = useState('');
+  const [authenticated, setAuthenticated] = useState(false); // State to track authentication status
   const [modalError, setModalError] = useState('');
 
   // Function to handle change in passcode input
   const handleChangePasscode = (event) => {
     setPasscode(event.target.value);
+  };
+
+  // Function to handle login button click or Enter key press
+  const handleLogin = () => {
+    if (passcode === AUTH_PASSCODE) {
+      setAuthenticated(true);
+    } else {
+      setModalError('Incorrect passcode. Please try again.');
+    }
   };
 
   // Function to add a new todo item
@@ -144,7 +152,7 @@ function App() {
     syncToGitHub(todos); // Sync todos after deletion
   };
 
-  // Render UI components
+  // Render UI components based on authentication status
   return (
     <ChakraProvider theme={theme}>
       <Box p={10} maxW="md" mx="auto" mt={8} bg="brand.800" color="brand.50">
@@ -154,40 +162,63 @@ function App() {
           </span>
         </Heading>
 
-        <input type="password" value={passcode} onChange={handleChangePasscode} placeholder="Enter passcode" />
-
-        <TodoInput addTodo={addTodo} newTodo={newTodo} setNewTodo={setNewTodo} />
-
-        <VStack spacing={4} width="100%" align="stretch">
-          {todos.map((todo) => (
-            <Box key={todo.id} p={2} bg="brand.700" color="brand.50" borderColor="brand.500" borderRadius="md">
-              <TodoItem todo={todo} onCheck={completeTodo} onDelete={deleteTodo} />
-            </Box>
-          ))}
-        </VStack>
-
-        {completedTodos.length > 0 && (
-          <CompletedTodos completedTodos={completedTodos} />
-        )}
-      </Box>
-
-      <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <ModalOverlay />
-        <ModalContent bg="brand.800" color="brand.50">
-          <ModalHeader>Confirm Delete</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            Are you sure you want to delete this todo?
-          </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="red" mr={3} onClick={confirmDelete}>
-              Delete
+        {!authenticated && (
+          <VStack spacing={4} width="100%" align="stretch" mb={8}>
+            <Input
+              type="password"
+              placeholder="Enter passcode"
+              value={passcode}
+              onChange={handleChangePasscode}
+              variant="filled"
+              size="lg"
+            />
+            <Button onClick={handleLogin} colorScheme="teal" size="lg">
+              Login
             </Button>
-            <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
+            {modalError && (
+              <Text mt={2} color="red.500">
+                {modalError}
+              </Text>
+            )}
+          </VStack>
+        )}
 
+        {authenticated && (
+          <>
+            <TodoInput addTodo={addTodo} newTodo={newTodo} setNewTodo={setNewTodo} />
+
+            <VStack spacing={4} width="100%" align="stretch">
+              {todos.map((todo) => (
+                <Box key={todo.id} p={2} bg="brand.700" color="brand.50" borderColor="brand.500" borderRadius="md">
+                  <TodoItem todo={todo} onCheck={completeTodo} onDelete={deleteTodo} />
+                </Box>
+              ))}
+            </VStack>
+
+            {completedTodos.length > 0 && (
+              <CompletedTodos completedTodos={completedTodos} />
+            )}
+
+            <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+              <ModalOverlay />
+              <ModalContent bg="brand.800" color="brand.50">
+                <ModalHeader>Confirm Delete</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  Are you sure you want to delete this todo?
+                </ModalBody>
+                <ModalFooter>
+                  <Button colorScheme="red" mr={3} onClick={confirmDelete}>
+                    Delete
+                  </Button>
+                  <Button variant="ghost" onClick={() => setIsOpen(false)}>Cancel</Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          </>
+        )}
+
+      </Box>
     </ChakraProvider>
   );
 }
