@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import {
   ChakraProvider,
-  ChevronDownIcon,
   Box,
   Heading,
   VStack,
@@ -21,10 +20,10 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  Icon,
   IconButton,
   Input,
 } from '@chakra-ui/react';
+import { HamburgerIcon } from '@chakra-ui/icons'; // Import HamburgerIcon from Chakra UI
 import theme from './theme'; // Import custom Chakra UI theme
 import TodoInput from './TodoInput';
 import TodoItem from './TodoItem';
@@ -178,8 +177,7 @@ function App() {
             Completed Todos
           </Heading>
           <Menu>
-            <MenuButton as={Icon} icon={<ChevronDownIcon />} variant="outline" aria-label="Options" color="brand.50" />
-            <MenuList>
+          <MenuButton as={IconButton} icon={<HamburgerIcon />} variant="outline" aria-label="Options" color="brand.50" />            <MenuList>
               <MenuItem onClick={deleteCompletedTodos}>Delete All Completed Todos</MenuItem>
             </MenuList>
           </Menu>
