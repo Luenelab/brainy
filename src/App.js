@@ -198,7 +198,7 @@ function App() {
     <ChakraProvider theme={theme}>
       <Box p={10} maxW="md" mx="auto" mt={8} color="brand.50">
         <Heading mb={4} as="h1" size="2xl" textAlign="left">
-          Brainy§
+          Brainy ;-
         </Heading>
         {syncMessage && <Text mt={2} color="gray.400" fontSize="sm">{syncMessage}</Text>}
         {!authenticated && (
