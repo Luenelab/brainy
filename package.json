@@ -1,8 +1,8 @@
 {
-  "name": "todapp",
+  "name": "brainy",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://luenelab.github.io/todapp",
+  "homepage": "https://luenelab.github.io/brainy",
   "dependencies": {
     "@chakra-ui/icons": "^2.1.1",
     "@chakra-ui/react": "^2.8.2",
