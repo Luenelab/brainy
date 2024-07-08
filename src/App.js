@@ -34,7 +34,7 @@ const REPO_OWNER = 'Luenelab';
 const REPO_NAME = 'brainy_data';
 const FILE_PATH = 'brain_sourcefiles';
 const BRAIN_FILE = 'brain_raphael';
-const AUTH_PASSCODE = '1234'; // Hardcoded authentication passcode
+const AUTH_PASSCODE = process.env.REACT_APP_AUTH_PASSCODE;
 
 function App() {
   const [todos, setTodos] = useState([]);
