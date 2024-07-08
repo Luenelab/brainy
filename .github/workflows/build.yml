@@ -43,7 +43,10 @@ jobs:
           path: build
 
       - name: Log Passcode
-        run: echo "Auth Passcode: ${{ secrets.REACT_APP_AUTH_PASSCODE }}"
+        env:
+          REACT_APP_AUTH_PASSCODE: ${{ secrets.REACT_APP_AUTH_PASSCODE }}
+        run: |
+          echo "Auth Passcode: $REACT_APP_AUTH_PASSCODE"
 
       - name: Deploy to GitHub Pages
         env:
