@@ -26,6 +26,7 @@ import theme from './theme'; // Import custom Chakra UI theme
 import TodoInput from './TodoInput';
 import TodoItem from './TodoItem';
 
+
 const GITHUB_API_URL = 'https://api.github.com';
 const REPO_OWNER = 'Luenelab';
 const REPO_NAME = 'brainy_data';
@@ -144,9 +145,10 @@ function App() {
 
   // Function to sync todo data with GitHub repository
   const syncToGitHub = async (items) => {
+    
     try {
       const content = JSON.stringify(items, null, 2);
-      const url = `${GITHUB_API_URL}/repos/${REPO_OWNER}/${REPO_NAME}/contents/${FILE_PATH}/${BRAIN_FILE}`;
+      const url = `https://api.github.com/repos/Luenelab/brainy_data/contents/brain_sourcefiles/brain_raphael.json`;
       const headers = {
         Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
       };
@@ -157,7 +159,7 @@ function App() {
       // Update file content
       await axios.put(url, {
         message: 'Update from Brainy app',
-        content: Buffer.from(content).toString('base64'),
+        content: btoa(content), // Using btoa() to encode content to base64
         sha,
       }, { headers });
 
