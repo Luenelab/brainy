@@ -29,11 +29,6 @@ import TodoInput from './TodoInput';
 import TodoItem from './TodoItem';
 
 
-const GITHUB_API_URL = 'https://api.github.com';
-const REPO_OWNER = 'Luenelab';
-const REPO_NAME = 'brainy_data';
-const FILE_PATH = 'brain_sourcefiles';
-const BRAIN_FILE = 'brain_raphael';
 const AUTH_PASSCODE = process.env.REACT_APP_AUTH_PASSCODE;
 
 function App() {
