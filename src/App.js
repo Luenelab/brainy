@@ -202,7 +202,7 @@ function App() {
   // Render UI components based on authentication status
   return (
     <ChakraProvider theme={theme}>
-      <Box p={10} maxW="md" mx="auto" mt={8} bg="brand.800" color="brand.50">
+      <Box p={10} maxW="md" mx="auto" mt={8} color="brand.50">
         <Heading mb={4} as="h1" size="2xl" textAlign="left">
           #brain
         </Heading>
