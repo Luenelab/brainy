@@ -15,10 +15,6 @@ function TodoItem({ todo, onCheck, onUpdate, onDelete }) {
     setIsEditing(false);
   };
 
-  const handleDelete = () => {
-    onDelete(todo.id);
-  };
-
   const handleTextClick = () => {
     setIsEditing(true);
   };
