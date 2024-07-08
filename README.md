@@ -1,5 +1,5 @@
-# todapp
-My first App: a todo app with a custom theme
+# Brainy
+My first App: a thought-to-device-dump-app with a custom theme
 
 
 # Getting Started with Create React App
