@@ -148,7 +148,7 @@ function App() {
       const content = JSON.stringify(items, null, 2);
       const url = `https://api.github.com/repos/Luenelab/brainy/contents/brainy_brainfiles/brain_raphael.json`;
       const headers = {
-        Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
+        Authorization: `token ${GITHUB_TOKEN}`,
       };
 
       // Fetch current file details
