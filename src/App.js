@@ -28,7 +28,7 @@ import theme from './theme'; // Import custom Chakra UI theme
 import TodoInput from './TodoInput';
 import TodoItem from './TodoItem';
 
-
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN || process.env.REACT_APP_GITHUB_TOKEN;
 const AUTH_PASSCODE = process.env.REACT_APP_AUTH_PASSCODE;
 
 function App() {
@@ -61,9 +61,9 @@ function App() {
   // Function to fetch todos from GitHub
   const fetchTodosFromGitHub = async () => {
     try {
-      const url = `https://api.github.com/repos/Luenelab/brainy_data/contents/brain_sourcefiles/brain_raphael.json`;
+      const url = `https://api.github.com/repos/Luenelab/brainy/contents/brain_sourcefiles/brain_raphael.json`;
       const headers = {
-        Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
+        Authorization: `token ${GITHUB_TOKEN}`,
       };
 
       const response = await axios.get(url, { headers });
@@ -146,7 +146,7 @@ function App() {
     
     try {
       const content = JSON.stringify(items, null, 2);
-      const url = `https://api.github.com/repos/Luenelab/brainy_data/contents/brain_sourcefiles/brain_raphael.json`;
+      const url = `https://api.github.com/repos/Luenelab/brainy/contents/brain_sourcefiles/brain_raphael.json`;
       const headers = {
         Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
       };

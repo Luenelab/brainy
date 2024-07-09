@@ -23,7 +23,7 @@ jobs:
           npm run build
         env:
           REACT_APP_AUTH_PASSCODE: ${{ secrets.REACT_APP_AUTH_PASSCODE }}
-          REACT_APP_GITHUB_TOKEN: ${{ secrets.REACT_APP_GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
 
       - name: List project directory after build
         run: ls -la
