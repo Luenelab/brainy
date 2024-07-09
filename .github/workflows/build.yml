@@ -42,15 +42,11 @@ jobs:
           name: build
           path: build
 
-      - name: Log Passcode
-        env:
-          REACT_APP_AUTH_PASSCODE: ${{ secrets.REACT_APP_AUTH_PASSCODE }}
-        run: |
-          echo "Auth Passcode: $REACT_APP_AUTH_PASSCODE"
-
       - name: Deploy to GitHub Pages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REACT_APP_AUTH_PASSCODE: ${{ secrets.REACT_APP_AUTH_PASSCODE }}
+          REACT_APP_GITHUB_TOKEN: ${{ secret.REACT_APP_GITHUB_TOKEN}}
         run: |
           git fetch origin gh-pages:gh-pages  # Fetch gh-pages branch from remote
           git checkout gh-pages  # Switch to gh-pages branch
