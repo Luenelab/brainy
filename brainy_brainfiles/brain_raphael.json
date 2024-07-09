@@ -1,10 +1,5 @@
 [
   {
-    "id": 1720440286516,
-    "text": "IT WORKS!!!!",
-    "completed": false
-  },
-  {
     "id": 1720440306090,
     "text": "lalalalal",
     "completed": false
@@ -43,5 +38,10 @@
     "id": 1720511466032,
     "text": "dsfgdfs",
     "completed": false
+  },
+  {
+    "id": 1720440286516,
+    "text": "IT WORKS!!!!",
+    "completed": true
   }
 ]
