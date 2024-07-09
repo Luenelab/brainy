@@ -49,6 +49,7 @@ function App() {
 
   // Function to handle login button click or Enter key press
   const handleLogin = () => {
+    console.log('REACT_APP_AUTH_PASSCODE:', AUTH_PASSCODE); // Log the passcode value
     if (passcode === AUTH_PASSCODE) {
       setAuthenticated(true);
       setSyncMessage('Authenticated successfully. Loading data...');
