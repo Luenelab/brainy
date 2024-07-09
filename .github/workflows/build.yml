@@ -18,13 +18,13 @@ jobs:
         run: git branch -a
 
       - name: Install dependencies and build
-        run: |
-          npm install
-          npm run build
         env:
           REACT_APP_AUTH_PASSCODE: ${{ secrets.REACT_APP_AUTH_PASSCODE }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN}}
-
+        run: |
+          npm install
+          npm run build
+       
       - name: List project directory after build
         run: ls -la
 
