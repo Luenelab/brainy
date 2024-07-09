@@ -61,7 +61,7 @@ function App() {
   // Function to fetch todos from GitHub
   const fetchTodosFromGitHub = async () => {
     try {
-      const url = `https://api.github.com/repos/Luenelab/brainy/contents/brain_sourcefiles/brain_raphael.json`;
+      const url = `https://api.github.com/repos/Luenelab/brainy/contents/brainy_brainfiles/brain_raphael.json`;
       const headers = {
         Authorization: `token ${GITHUB_TOKEN}`,
       };
@@ -146,7 +146,7 @@ function App() {
     
     try {
       const content = JSON.stringify(items, null, 2);
-      const url = `https://api.github.com/repos/Luenelab/brainy/contents/brain_sourcefiles/brain_raphael.json`;
+      const url = `https://api.github.com/repos/Luenelab/brainy/contents/brainy_brainfiles/brain_raphael.json`;
       const headers = {
         Authorization: `token ${process.env.REACT_APP_GITHUB_TOKEN}`,
       };
