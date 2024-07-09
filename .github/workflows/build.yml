@@ -46,7 +46,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REACT_APP_AUTH_PASSCODE: ${{ secrets.REACT_APP_AUTH_PASSCODE }}
-          REACT_APP_GITHUB_TOKEN: ${{ secret.REACT_APP_GITHUB_TOKEN}}
+          REACT_APP_GITHUB_TOKEN: ${{ secrets.REACT_APP_GITHUB_TOKEN}}
         run: |
           git fetch origin gh-pages:gh-pages  # Fetch gh-pages branch from remote
           git checkout gh-pages  # Switch to gh-pages branch
